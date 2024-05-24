@@ -1,7 +1,7 @@
 version: '3.7'
 services:
     db:
-        image: mariadb:latest
+        image: hwlim78/gaon-db:v1.0
         container_name: db
         restart: always
         environment:
