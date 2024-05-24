@@ -8,6 +8,7 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 RUN git clone https://github.com/yblmmen/gaon.git
 RUN mkdir /source/data
+RUN chmod -R 777 /source
 
 EXPOSE 80
 
