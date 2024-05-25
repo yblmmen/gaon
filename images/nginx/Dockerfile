@@ -6,8 +6,13 @@ RUN apt-get install git -y
 COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 
-# Git 설치 여부 확인 후, 없다면 Git 설치
-RUN git --version || { apt-get update && apt-get install -y git; }
+# Git이 설치되어 있는지 확인하고, 없다면 설치 후 명령어 실행
+RUN if ! command -v git &> /dev/null; then \
+        apt-get update && \
+        apt-get install -y git \
+    ; fi && \
+    git clone https://github.com/gnuboard/gnuboard5.git
+
 RUN mkdir /source/data
 RUN chmod -R 777 /source
 
