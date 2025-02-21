@@ -1,7 +1,4 @@
-말씀하신 대로 Ingress 설정에 ingressClassName이 누락되어 있어 문제가 발생할 수 있습니다. Kubernetes에서 Ingress 리소스를 사용할 때, 특히 nginx-ingress 컨트롤러를 사용하는 경우, spec.ingressClassName 필드를 명시적으로 설정하여 어떤 Ingress Controller가 이 리소스를 처리할지 지정해야 합니다. 이를 추가하여 수정하겠습니다.
-아래는 Ingress 문제를 해결한 최종 README.md 파일로, ingressClassName: nginx를 추가한 통합 YAML 파일을 포함합니다. 기존 내용은 유지하면서 이 부분만 반영하겠습니다.
-README.md: gaondisystem.co.kr Kubernetes Migration Guide
-이 문서는 gaondisystem.co.kr 서비스를 Docker Compose에서 Kubernetes로 마이그레이션하는 과정을 설명합니다. 기존 환경은 nginx:1.25, php:7.4-fpm, mariadb:11.3.2로 구성되어 있으며, 소스 파일은 GitHub 저장소(https://github.com/yblmmen/gaon.git)에서 가져옵니다. 모든 리소스는 단일 YAML 파일로 통합되며, HTTPS를 지원합니다.
+ 
 목차
 사전 준비 (#사전-준비)
 기존 데이터 백업 (#기존-데이터-백업)
@@ -305,29 +302,43 @@ kubectl get ingress
 bash
 curl -k https://gaondisystem.co.kr
 또는 브라우저에서 https://gaondisystem.co.kr 접속을 확인하세요.
+
 문제 해결 팁
 Ingress 관련 에러:
+
 확인: kubectl describe ingress gaon-ingress
+
 해결: ingressClassName: nginx가 올바르게 설정되었는지, nginx-ingress 컨트롤러가 실행 중인지 확인 (kubectl get pods -n ingress-nginx).
+
 PHP 의존성 에러:
+
 로그 확인: kubectl logs <php-fpm-pod-name>
+
 해결: php-fpm 컨테이너의 args에 필요한 패키지 설치 명령 추가.
+
 403/503 에러:
+
 로그 확인: kubectl logs <nginx-pod-name>
+
 해결: 권한 문제라면 chown/chmod 명령 조정.
+
 DB 연결 실패:
+
 환경 변수 확인: kubectl describe pod <php-fpm-pod-name>
 서비스 확인: kubectl get svc mariadb.
+
 결과
+
 PHP: 버전 7.4로 설정, 의존성(mysqli, pdo, pdo_mysql) 설치.
+
 MariaDB: 버전 11.3.2로 설정, 기존 데이터 복원.
+
 Nginx: 소스 파일 권한 문제 해결, HTTPS로 gaondisystem.co.kr 제공.
+
 소스 파일: GitHub(https://github.com/yblmmen/gaon.git)에서 가져와 /var/www/html에 배치.
+
 Ingress: ingressClassName: nginx 추가로 nginx-ingress 컨트롤러와 정상 연동.
+
 접속: https://gaondisystem.co.kr로 정상 동작.
-추가 참고
-이 문서는 Grok 3 (xAI)와의 대화를 기반으로 작성되었습니다.
-질문이나 문제가 있다면 GitHub 이슈를 통해 문의하세요.
-변경사항 설명
-Ingress 수정: spec 아래에 ingressClassName: nginx를 추가하여 nginx-ingress 컨트롤러가 이 Ingress 리소스를 처리하도록 명시했습니다. 이로 인해 Ingress가 올바르게 작동하지 않는 문제가 해결됩니다.
-이 README.md 파일을 GitHub에 업로드하면 됩니다. 추가로 확인하거나 수정할 내용이 있다면 말씀해주세요!
+
+ 
